@@ -39,6 +39,61 @@ blogRoutes.get("/", async (req, res) => {
     }
 });
 
+// Get all blogs by author ID
+blogRoutes.get("/author/:authorId", async (req, res) => {
+    const { authorId } = req.params;
+
+    try {
+        const blogs = await prisma.blog.findMany({
+            where: { authorId },
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true
+                    }
+                },
+                comments: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        if (blogs.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No blogs found for this author"
+            });
+        }
+
+        res.json({
+            success: true,
+            blogs
+        });
+    } catch (error) {
+        console.error("Error fetching author's blogs:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch author's blogs"
+        });
+    }
+});
+
+
 // Get specific blog by ID and game
 blogRoutes.get('/:game/:id', async (req, res) => {
     const { game, id } = req.params;
@@ -265,5 +320,7 @@ blogRoutes.delete("/deleteBlog/:id", isAdmin, async (req, res) => {
         });
     }
 });
+
+
 
 module.exports = blogRoutes;

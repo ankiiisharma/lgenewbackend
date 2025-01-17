@@ -17,7 +17,8 @@ const corsOptions = {
         'http://localhost:3000',
         'https://admin-lge.vercel.app',
         'https://lgeadmin.web.app',
-        'https://lgenew.vercel.app'
+        'https://lgenew.vercel.app',
+        'https://www.letsgrowesports.com'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']

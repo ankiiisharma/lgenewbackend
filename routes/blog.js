@@ -224,7 +224,7 @@ blogRoutes.post('/:game/:id/comments', isSigned, async (req, res) => {
 
 // Create new blog (Admin only)
 blogRoutes.post("/postBlog", isAdmin, async (req, res) => {
-    const { game, title, description, image } = req.body;
+    const { game, title, description, summary, image } = req.body;
     const authorId = req.user.id;
 
     if (!game || !title || !description) {
@@ -240,7 +240,6 @@ blogRoutes.post("/postBlog", isAdmin, async (req, res) => {
                 id: uuidv4(),
                 game,
                 title,
-                summary,
                 description,
                 image: image || "",
                 authorId,
@@ -264,7 +263,7 @@ blogRoutes.post("/postBlog", isAdmin, async (req, res) => {
 
 // Update blog (Admin only)
 blogRoutes.put("/updateBlog/:id", isAdmin, async (req, res) => {
-    const { game, title, description, image, published } = req.body;
+    const { game, title, description, summary, image, published } = req.body;
     const { id } = req.params;
 
     try {

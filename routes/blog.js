@@ -273,7 +273,7 @@ blogRoutes.put("/updateBlog/:id", isAdmin, async (req, res) => {
             data: {
                 game,
                 title,
-                summary,
+                summary, // Include the summary field
                 description,
                 image,
                 published: published ?? undefined,

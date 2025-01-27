@@ -138,7 +138,7 @@ blogRoutes.get('/:game/:id', async (req, res) => {
                 message: "Blog not found for this game"
             });
         }
-
+        console.log("summary", blog.summary);
         res.json({ success: true, blog });
     } catch (error) {
         console.error("Error fetching blog:", error);

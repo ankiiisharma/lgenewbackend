@@ -33,7 +33,7 @@ function isAdmin(req, res, next) {
         }
 
         // Verify the token
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const decoded = jwt.verify(token,process.env.SECRET_KEY);
 
         // Verify token payload has required fields
         if (!decoded.id || !decoded.role) {

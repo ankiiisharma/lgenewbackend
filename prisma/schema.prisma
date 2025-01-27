@@ -23,7 +23,7 @@ model Blog {
   id          String    @id @default(uuid())
   title       String
   description String
-  summary     String?
+  summary     String
   game        String
   published   Boolean   @default(false)
   image       String

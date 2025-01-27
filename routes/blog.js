@@ -109,8 +109,6 @@ blogRoutes.get('/:game/:id', async (req, res) => {
                         email: true
                     }
                 },
-                summary?: true,
-
                 comments: {
                     include: {
                         user: {

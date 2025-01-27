@@ -8,44 +8,45 @@ datasource db {
 }
 
 model User {
-  id       String     @id @default(uuid())
-  email    String     @unique
-  password String
-  name     String     @default("Default Name") @db.VarChar
-  role     Role       @default(USER)
-  blogs    Blog[]     // Added relation to blogs
-  comments Comment[]
+  email     String    @unique
+  password  String
+  role      Role      @default(USER)
+  id        String    @id @default(uuid())
+  name      String    @default("Default Name") @db.VarChar
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  blogs     Blog[]
+  comments  Comment[]
 }
 
 model Blog {
-  id          String     @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
-  description String     @db.Text  // Changed to Text type for HTML content
+  description String
+  summary     String?
   game        String
-  published   Boolean    @default(false)
+  published   Boolean   @default(false)
   image       String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  author      User       @relation(fields: [authorId], references: [id])
-  authorId    String     // Foreign key for User relation
+  authorId    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  author      User      @relation(fields: [authorId], references: [id])
   comments    Comment[]
 
-  @@map("blog") // Keeps the table name as "blog" in database
+  @@map("blog")
 }
 
 model Comment {
   id        String   @id @default(uuid())
   content   String
   blogId    String
-  userId    String   // Changed to String to match User id type
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   blog      Blog     @relation(fields: [blogId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 
-  @@map("comments") // Keeps the table name as "comments" in database
+  @@map("comments")
 }
 
 enum Role {

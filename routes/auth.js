@@ -26,8 +26,7 @@ function generateToken(user) {
             email: user.email,
             role: user.role
         },
-        process.env.SECRET_KEY,
-        { expiresIn: "1d" }
+        process.env.SECRET_KEY
     );
 }
 

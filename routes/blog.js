@@ -240,6 +240,7 @@ blogRoutes.post("/postBlog", isAdmin, async (req, res) => {
                 id: uuidv4(),
                 game,
                 title,
+                summary,
                 description,
                 image: image || "",
                 authorId,
@@ -272,6 +273,7 @@ blogRoutes.put("/updateBlog/:id", isAdmin, async (req, res) => {
             data: {
                 game,
                 title,
+                summary,
                 description,
                 image,
                 published: published ?? undefined,

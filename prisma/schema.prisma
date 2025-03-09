@@ -32,6 +32,7 @@ model Blog {
   updatedAt   DateTime  @updatedAt
   author      User      @relation(fields: [authorId], references: [id])
   comments    Comment[]
+  visible     Boolean   @default(false)
 
   @@map("blog")
 }
@@ -52,4 +53,5 @@ model Comment {
 enum Role {
   USER
   ADMIN
+  MODERATOR
 }

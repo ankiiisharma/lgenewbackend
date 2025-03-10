@@ -112,4 +112,50 @@ userRoutes.post("/signin", async (req, res) => {
   }
 });
 
+// Admin login route
+userRoutes.post("/adminLogin", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ msg: "Email and password are required" });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(401).json({ msg: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ msg: "Invalid email or password" });
+    }
+
+    if (user.role !== "ADMIN") {
+      return res.status(403).json({
+        msg: "Access denied. Only administrators can access this route.",
+      });
+    }
+
+    const token = generateToken(user);
+
+    res.json({
+      msg: "Admin login successful",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Admin login error:", error);
+    res.status(500).json({ msg: "Admin login failed" });
+  }
+});
+
 module.exports = userRoutes;

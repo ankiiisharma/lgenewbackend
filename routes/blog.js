@@ -346,63 +346,48 @@ blogRoutes.get("/:game/:id", async (req, res) => {
   }
 });
 
-// Add comment to blog
-const commentLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 1, // limit each IP to 1 comment per windowMs
-  message: {
-    success: false,
-    message: "You can only make one comment per minute",
-  },
-});
+blogRoutes.post("/:game/:id/comments", isSigned, async (req, res) => {
+  const { id: blogId } = req.params;
+  const { content } = req.body;
+  const userId = req.user.id;
 
-blogRoutes.post(
-  "/:game/:id/comments",
-  isSigned,
-  commentLimiter,
-  async (req, res) => {
-    const { id: blogId } = req.params;
-    const { content } = req.body;
-    const userId = req.user.id;
+  if (!content?.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "Comment content cannot be empty",
+    });
+  }
 
-    if (!content?.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: "Comment content cannot be empty",
-      });
-    }
-
-    try {
-      const newComment = await prisma.comment.create({
-        data: {
-          id: uuidv4(),
-          content,
-          blogId,
-          userId,
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-            },
+  try {
+    const newComment = await prisma.comment.create({
+      data: {
+        id: uuidv4(),
+        content,
+        blogId,
+        userId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
           },
         },
-      });
+      },
+    });
 
-      res.status(201).json({
-        success: true,
-        message: "Comment added successfully",
-        comment: newComment,
-      });
-    } catch (error) {
-      console.error("Error adding comment:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to add comment",
-      });
-    }
+    res.status(201).json({
+      success: true,
+      message: "Comment added successfully",
+      comment: newComment,
+    });
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to add comment",
+    });
   }
-);
+});
 
 module.exports = blogRoutes;

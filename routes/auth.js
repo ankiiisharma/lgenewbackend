@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
+const rateLimit = require("express-rate-limit");
 
 dotenv.config();
 userRoutes.use(express.json());
@@ -30,8 +31,17 @@ function generateToken(user) {
   );
 }
 
+// Signin route
+const signinLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 1, // limit each IP to 1 request per windowMs
+  message: {
+    msg: "Too many login attempts from this IP, please try again after a minute",
+  },
+});
+
 // Signup route
-userRoutes.post("/signup", async (req, res) => {
+userRoutes.post("/signup", signinLimiter, async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!email || !password) {
@@ -72,7 +82,6 @@ userRoutes.post("/signup", async (req, res) => {
   }
 });
 
-// Signin route
 userRoutes.post("/signin", async (req, res) => {
   const { email, password } = req.body;
 
